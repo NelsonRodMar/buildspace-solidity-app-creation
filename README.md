@@ -11,5 +11,6 @@ To run the result of this course, clone this repo and follow these commands:
 ### **Basic solidity contract !**
 
 This project is a basic contract to learn Solidity.
-The goal is to increase a number by using the wave() function, and only the owner of the contract can call this function
-The contract is deployed on Rinkeby : [0x54D41A349a75BCa0c46c9709c5b3De2666A7A458](https://rinkeby.etherscan.io/address/0x54D41A349a75BCa0c46c9709c5b3De2666A7A458)
+This contract let you Wave me with a little message only if the contract is not paused
+Only the owner of the contract can pause it
+The contract is deployed on Rinkeby : [0x21106Ef51CD9bDB1A98Ad7F5e8EAC865549528b2](https://rinkeby.etherscan.io/address/0x21106Ef51CD9bDB1A98Ad7F5e8EAC865549528b2)

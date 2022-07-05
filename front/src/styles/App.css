@@ -34,6 +34,19 @@
   border-radius: 5px;
   width: 100%;
 }
+#waveTextArea {
+  width: 582px; 
+  height: 184px;
+  resize: none;
+}
+.changePauseButton {
+  cursor: pointer;
+  margin-top: 16px;
+  padding: 8px;
+  border: 0;
+  border-radius: 5px;
+  width: 100%;
+}
 
 .footer-container {
   display: flex;
