@@ -1,37 +1,68 @@
 const main = async () => {
-    const [owner, randomPerson] = await hre.ethers.getSigners();
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
-    const waveContract = await waveContractFactory.deploy();
+    const wavePrice = {value: ethers.utils.parseEther("0.015")}
+    const waveContract = await waveContractFactory.deploy({
+        //value: hre.ethers.utils.parseEther("0.1"),
+    });
     await waveContract.deployed();
-    console.log("Contract deployed to:", waveContract.address);
-    console.log("Contract by :", owner.address);
+    console.log("Contract address:", waveContract.address);
 
-    let waveCount;
-    waveCount = await waveContract.getTotalWaves();
-    console.log("Total waves : " + waveCount);
+    /*
+     * Get Contract balance
+     */
+    let contractBalance = await hre.ethers.provider.getBalance(
+        waveContract.address
+    );
+    console.log(
+        "Contract balance:",
+        hre.ethers.utils.formatEther(contractBalance)
+    );
 
-    let waveTxn = await waveContract.wave();
+    /*
+     * Unpause contract
+     */
+    let unapausedTxn = await waveContract.changeIsPausedState();
+    await unapausedTxn.wait();
+    let getIsPaused = await waveContract.getIsPaused();
+    console.log("Contract IsPaused status : " + getIsPaused);
+
+
+    /*
+     * Send Wave
+     */
+    let waveTxn = await waveContract.wave("A message!", wavePrice);
     await waveTxn.wait();
 
-    waveCount = await waveContract.getTotalWaves();
-    console.log("Total waves : " + waveCount);
-
+    /*
+     * Second Wave that will fail
+     */
     try {
-
-        waveTxn = await waveContract.connect(randomPerson).wave();
+        waveTxn = await waveContract.wave("A message!", wavePrice);
         await waveTxn.wait();
-    } catch (error){
-        console.log(" Il y as eu une erreur ");
+    } catch (e) {
+        console.log("Transaction failed : ", e.message);
     }
 
-    waveTxn = await waveContract.setNewOwner(randomPerson.address);
-    await waveTxn.wait();
+    /*
+     * Get Contract balance to see what happened!
+     */
+    contractBalance = await hre.ethers.provider.getBalance(waveContract.address);
+    console.log(
+        "Contract balance:",
+        hre.ethers.utils.formatEther(contractBalance)
+    );
 
-    waveTxn = await waveContract.connect(randomPerson).wave();
-    await waveTxn.wait();
+    let allWaves = await waveContract.getAllWaves();
+    console.log(allWaves);
 
-    waveCount = await waveContract.getTotalWaves();
-    console.log("Total waves : " + waveCount);
+    /*
+     * Pause contract
+     */
+    unapausedTxn = await waveContract.changeIsPausedState();
+    await unapausedTxn.wait();
+    getIsPaused = await waveContract.getIsPaused();
+    console.log("Contract IsPaused status : " + getIsPaused);
+
 };
 
 const runMain = async () => {

@@ -8,7 +8,7 @@ import twitterLogo from './assets/twitter-logo.svg';
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [allWaves, setAllWaves] = useState([]);
-  const contractAddress = "0x21106Ef51CD9bDB1A98Ad7F5e8EAC865549528b2";
+  const contractAddress = "0xea76dd45D3024c0f1166562ed3c1966307416eAC";
   const contractABI = abi.abi;
   var isPaused;
 
@@ -136,12 +136,13 @@ const App = () => {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
         /*
         * Execute the actual wave from your smart contract
         */
         var waveMessage = document.getElementById('waveTextArea').value;
         
-        const waveTxn = await wavePortalContract.wave(waveMessage);
+        const waveTxn = await wavePortalContract.wave(waveMessage, { gasLimit: 300000, value: ethers.utils.parseEther("0.015")});
         console.log("Mining...", waveTxn.hash);
 
         await waveTxn.wait();
